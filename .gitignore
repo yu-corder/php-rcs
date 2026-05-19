@@ -1,0 +1,15 @@
+.idea
+.vscode
+*.iml
+.php-cs-fixer.php
+.php-cs-fixer.cache
+vendor
+composer.phar
+coverage.xml
+coverage
+phpunit.xml
+*.phpunit.result.cache
+.phpunit.cache/
+*.cache
+.DS_Store
+Thumbs.db
