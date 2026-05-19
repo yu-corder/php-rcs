@@ -1,0 +1,43 @@
+{
+    "name": "todayuuya/php-rcs",
+    "description": "A pure PHP implementation of a Revision Control System (RCS) for file versioning.",
+    "license": "MIT",
+    "type": "library",
+    "keywords": [
+        "rcs",
+        "version-control",
+        "revision",
+        "diff"
+    ],
+    "authors": [
+        {
+            "name": "yu-corder",
+            "email": "yuuya.9602@icloud.com",
+            "homepage": "https://yu-syumilog.com/"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/yu-corder/php-rcs/issues",
+        "source": "https://github.com/yu-corder/php-rcs"
+    },
+    "require": {
+        "php": "^8.2"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.0",
+        "phpunit/phpunit": "^10.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "YuCorder\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "YuCorder\\Tests\\": "tests/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
