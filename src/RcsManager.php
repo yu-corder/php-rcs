@@ -25,7 +25,7 @@ class RcsManager
     /**
      * @param $string, $string
      */
-    public function checkin(string $filePath, string $commet): bool {
+    public function checkin(string $filePath, string $comment): bool {
 
         if (is_dir($filePath)) {
             return false;
@@ -35,20 +35,41 @@ class RcsManager
         $file = basename($filePath);
         $rcsPath = $dir . '/.rcs/';
 
-        $files = glob($rcsPath . $file . '*');
-        $rev = ".v";
-        $version = 1;
-        foreach($files as $revfile) {
-            $tmpfile = basename($revfile);
-            $v = strrpos($tmpfile, 'v');
-            $tmp = substr($tmpfile, $v + 1) + 1;
-            if ($version <= $tmp) $version = $tmp;
+        if (!is_dir($rcsPath)) {
+            mkdir($rcsPath, 0755, true);
         }
 
-        $final_rev = $rev . $version;
-        if (!copy($filePath, $rcsPath . $file . $final_rev)) {
-            return false;
+        $files = glob($rcsPath . $file . '*json');
+        $data = [];
+        if (!$files) {
+            $now = date("Y-m-d H:i:s");
+            $content = file_get_contents($filePath);
+            $data = [
+                "file_name" => $file,
+                "latest_version" => 1,
+                "history" => [[
+                    "version" => 1,
+                    "date" => $now,
+                    "comment" => $comment,
+                    "content" => $content,
+                ]]
+            ];
+        } else {
+            $data = json_decode(file_get_contents($files[0]), true);
+
+            $newRev = ++$data["latest_version"];
+            $addData = file_get_contents($filePath);
+            $now = date("Y-m-d H:i:s");
+            $final = [
+                "version" => $newRev,
+                "date" => $now,
+                "comment" => $comment,
+                "content" => $addData,
+            ];
+            array_push($data["history"], $final);
         }
-        return true;
+
+        $data = json_encode($data, JSON_PRETTY_PRINT);
+        return file_put_contents($rcsPath . $file . ".json", $data) !== false;
     }
 }
