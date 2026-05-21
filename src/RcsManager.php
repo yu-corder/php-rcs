@@ -58,22 +58,23 @@ class RcsManager
      * @param string $filePath
      * @param int $version
      * @return bool
+     * @throws \InvalidArgumentException|\RuntimeException
      */
     public function checkout(string $filePath, int $version): bool {
         if (is_dir($filePath)) {
-            return false;
+            throw new \InvalidArgumentException("Target path is a directory");
         }
 
         $jsonPath = $this->getJsonPath($filePath);
 
         if (!file_exists($jsonPath)) {
-            return false;
+            throw new \RuntimeException("RCS repository JSON file not found. Check in first.");
         }
 
         $rcsData = json_decode(file_get_contents($jsonPath), true);
         $index = $version - 1;
         if (!isset($rcsData["history"][$index])) {
-            return false;
+            throw new \InvalidArgumentException("Version {$version} not found in history.");
         }
         
         $targetContent = $rcsData["history"][$index]["content"];
@@ -83,17 +84,18 @@ class RcsManager
      /**
      * @param string $filePath
      * @param int|null $version
-     * @return array|bool
+     * @return array
+     * @throws \InvalidArgumentException|\RuntimeException
      */
-    public function log(string $filePath, ?int $version = null): array|bool {
+    public function log(string $filePath, ?int $version = null): array {
         if (is_dir($filePath)) {
-            return false;
+            throw new \InvalidArgumentException("Target path is a directory.");
         }
 
         $jsonPath = $this->getJsonPath($filePath);
 
         if (!file_exists($jsonPath)) {
-            return false;
+            throw new \RuntimeException("RCS repository JSON file not found. Check in first.");
         }
 
         $rcsData = json_decode(file_get_contents($jsonPath), true);
@@ -101,7 +103,7 @@ class RcsManager
         if ($version !== null) {
             $index = $version - 1;
             if (!isset($rcsData["history"][$index])) {
-                return false;
+                throw new \InvalidArgumentException("Version {$version} not found in history.");
             }
             $log = $rcsData["history"][$index];
         } else {
