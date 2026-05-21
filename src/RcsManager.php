@@ -67,14 +67,12 @@ class RcsManager
         $jsonPath = $this->getJsonPath($filePath);
 
         if (!file_exists($jsonPath)) {
-            echo("Check in first\n");
             return false;
         }
 
         $rcsData = json_decode(file_get_contents($jsonPath), true);
         $index = $version - 1;
         if (!isset($rcsData["history"][$index])) {
-            echo("Version not found\n");
             return false;
         }
         
@@ -95,7 +93,6 @@ class RcsManager
         $jsonPath = $this->getJsonPath($filePath);
 
         if (!file_exists($jsonPath)) {
-            echo("Check in first\n");
             return false;
         }
 
@@ -104,7 +101,6 @@ class RcsManager
         if ($version !== null) {
             $index = $version - 1;
             if (!isset($rcsData["history"][$index])) {
-                echo("Version not found\n");
                 return false;
             }
             $log = $rcsData["history"][$index];
