@@ -72,4 +72,33 @@ class RcsManager
         $data = json_encode($data, JSON_PRETTY_PRINT);
         return file_put_contents($rcsPath . $file . ".json", $data) !== false;
     }
+
+    /**
+     * @param $string $int
+     */
+    public function checkout(string $filePath, int $version): bool {
+        if (is_dir($filePath)) {
+            return false;
+        }
+
+        $dir = dirname($filePath);
+        $file = basename($filePath);
+        $rcsPath = $dir . '/.rcs/';
+        $jsonFile = $rcsPath . $file . '.json';
+
+        if (!file_exists($jsonFile)) {
+            echo("Check in first\n");
+            return false;
+        }
+
+        $data = json_decode(file_get_contents($jsonFile), true);
+        $index = $version - 1;
+        if (!isset($data["history"][$index])) {
+            echo("Version not found\n");
+            return false;
+        }
+        
+        $targetContent = $data["history"][$index]["content"];
+        return file_put_contents($filePath, $targetContent) !== false;
+    }
 }
