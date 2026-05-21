@@ -7,82 +7,88 @@ namespace YuCorder;
 class RcsManager
 {
     /**
-     * @param $string, $string
+     * @param string $filePath
+     * @param string $comment
+     * @return bool
      */
     public function checkin(string $filePath, string $comment): bool {
-
-        if (is_dir($filePath)) {
+        if (is_dir($filePath) || !file_exists($filePath)) {
             return false;
         }
 
-        $dir = dirname($filePath);
-        $file = basename($filePath);
-        $rcsPath = $dir . '/.rcs/';
+        $jsonPath = $this->getJsonPath($filePath);
+        $rcsDir = dirname($jsonPath);
 
-        if (!is_dir($rcsPath)) {
-            mkdir($rcsPath, 0755, true);
+        if (!is_dir($rcsDir)) {
+            mkdir($rcsDir, 0755, true);
         }
 
-        $files = glob($rcsPath . $file . '*json');
-        $data = [];
-        if (!$files) {
-            $now = date("Y-m-d H:i:s");
-            $content = file_get_contents($filePath);
-            $data = [
-                "file_name" => $file,
+        $now = date("Y-m-d H:i:s");
+        $currentContent = file_get_contents($filePath);
+        $fileName = basename($filePath);
+
+        if (!file_exists($jsonPath)) {
+            $rcsData = [
+                "file_name" => $fileName,
                 "latest_version" => 1,
                 "history" => [[
                     "version" => 1,
                     "date" => $now,
                     "comment" => $comment,
-                    "content" => $content,
+                    "content" => $currentContent,
                 ]]
             ];
         } else {
-            $data = json_decode(file_get_contents($files[0]), true);
-
-            $newRev = ++$data["latest_version"];
-            $addData = file_get_contents($filePath);
-            $now = date("Y-m-d H:i:s");
-            $final = [
-                "version" => $newRev,
+            $rcsData = json_decode(file_get_contents($jsonPath), true);
+            $nextVersion = ++$rcsData["latest_version"];
+            $newHistoryItem = [
+                "version" => $nextVersion,
                 "date" => $now,
                 "comment" => $comment,
-                "content" => $addData,
+                "content" => $currentContent,
             ];
-            array_push($data["history"], $final);
+            array_push($rcsData["history"], $newHistoryItem);
         }
 
-        $data = json_encode($data, JSON_PRETTY_PRINT);
-        return file_put_contents($rcsPath . $file . ".json", $data) !== false;
+        $jsonString = json_encode($rcsData, JSON_PRETTY_PRINT);
+        return file_put_contents($jsonPath, $jsonString) !== false;
     }
 
     /**
-     * @param $string $int
+     * @param string $filePath
+     * @param int $version
+     * @return bool
      */
     public function checkout(string $filePath, int $version): bool {
         if (is_dir($filePath)) {
             return false;
         }
 
-        $dir = dirname($filePath);
-        $file = basename($filePath);
-        $rcsPath = $dir . '/.rcs/';
-        $jsonFile = $rcsPath . $file . '.json';
+        $jsonPath = $this->getJsonPath($filePath);
 
-        if (!file_exists($jsonFile)) {
+        if (!file_exists($jsonPath)) {
             echo("Check in first\n");
             return false;
         }
 
-        $data = json_decode(file_get_contents($jsonFile), true);
+        $rcsData = json_decode(file_get_contents($jsonPath), true);
         $index = $version - 1;
-        if (!isset($data["history"][$index])) {
+        if (!isset($rcsData["history"][$index])) {
             echo("Version not found\n");
             return false;
         }
         
-        $targetContent = $data["history"][$index]["content"];
+        $targetContent = $rcsData["history"][$index]["content"];
         return file_put_contents($filePath, $targetContent) !== false;
+    }
+
+    /**
+     * @param string $filePath
+     * @return string
+     */
+    private function getJsonPath(string $filePath): string {
+        $dir = dirname($filePath);
+        $file = basename($filePath);
+        return $dir . '/.rcs/' . $file . '.json';
     }
 }
