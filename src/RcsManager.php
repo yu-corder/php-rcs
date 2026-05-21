@@ -11,7 +11,7 @@ class RcsManager
      * @param string $comment
      * @return bool
      */
-    public function checkin(string $filePath, string $comment): bool {
+    public function checkIn(string $filePath, string $comment): bool {
         if (is_dir($filePath) || !file_exists($filePath)) {
             return false;
         }
@@ -60,7 +60,7 @@ class RcsManager
      * @return bool
      * @throws \InvalidArgumentException|\RuntimeException
      */
-    public function checkout(string $filePath, int $version): bool {
+    public function checkOut(string $filePath, int $version): bool {
         if (is_dir($filePath)) {
             throw new \InvalidArgumentException("Target path is a directory");
         }
