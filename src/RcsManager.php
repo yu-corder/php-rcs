@@ -82,6 +82,39 @@ class RcsManager
         return file_put_contents($filePath, $targetContent) !== false;
     }
 
+     /**
+     * @param string $filePath
+     * @param int|null $version
+     * @return array|bool
+     */
+    public function log(string $filePath, ?int $version = null): array|bool {
+        if (is_dir($filePath)) {
+            return false;
+        }
+
+        $jsonPath = $this->getJsonPath($filePath);
+
+        if (!file_exists($jsonPath)) {
+            echo("Check in first\n");
+            return false;
+        }
+
+        $rcsData = json_decode(file_get_contents($jsonPath), true);
+
+        if ($version !== null) {
+            $index = $version - 1;
+            if (!isset($rcsData["history"][$index])) {
+                echo("Version not found\n");
+                return false;
+            }
+            $log = $rcsData["history"][$index];
+        } else {
+            $log = $rcsData["history"];
+        }
+
+        return $log;
+    }
+
     /**
      * @param string $filePath
      * @return string
