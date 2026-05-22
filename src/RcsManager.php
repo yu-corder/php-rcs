@@ -10,10 +10,11 @@ class RcsManager
      * @param string $filePath
      * @param string $comment
      * @return bool
+     * @throws \InvalidArgumentException
      */
     public function checkIn(string $filePath, string $comment): bool {
         if (is_dir($filePath) || !file_exists($filePath)) {
-            return false;
+            throw new \InvalidArgumentException("The target path is a directory, or the file does not exist.");
         }
 
         $jsonPath = $this->getJsonPath($filePath);
