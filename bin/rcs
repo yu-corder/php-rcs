@@ -1,5 +1,6 @@
 #!/usr/bin/env php
 <?php
+declare(strict_types=1);
 require_once __DIR__ . '/../vendor/autoload.php';
 
 use YuCorder\RcsManager;
@@ -11,7 +12,7 @@ if ($argc < 2) {
     exit(1);
 }
 
-$command = $argv[1];
+$command = strtolower($argv[1]);
 
 try {
     switch ($command) {
@@ -19,7 +20,7 @@ try {
             $file = $argv[2] ?? null;
             $comment = $argv[3] ?? 'No comment';
             if (!$file) {
-                echo "Error: Missing required argument <filename>.\n";
+                file_put_contents('php://stderr', "Error: Missing required argument <filename>.\n");
                 exit(1);
             }
             $rcs->checkIn($file, $comment);
@@ -31,7 +32,7 @@ try {
             $version = isset($argv[3]) ? (int)$argv[3] : null;
             
             if (!$file || $version === null) {
-                echo "Error: Missing required arguments <filename> or <version>.\n";
+                file_put_contents('php://stderr', "Error: Missing required arguments <filename> or <version>.\n");
                 exit(1);
             }
             
@@ -44,7 +45,7 @@ try {
             $version = isset($argv[3]) ? (int)$argv[3] : null;
 
             if (!$file) {
-                echo "Error: Missing required argument <filename>.\n";
+                file_put_contents('php://stderr', "Error: Missing required argument <filename>.\n");
                 exit(1);
             }
 
@@ -55,18 +56,20 @@ try {
             break;
         
         default:
-            echo "Error: Unknown command '{$argv[1]}'.\n";
+            file_put_contents('php://stderr', "Error: Unknown command '{$argv[1]}'.\n");
             showHelp();
             exit(1);
     }
 } catch (\Exception $e) {
-    echo("Error: " . $e->getMessage() . "\n");
+    file_put_contents('php://stderr', "Error: " . $e->getMessage() . "\n");
     exit(1);
 }
 
 function showHelp(): void {
-    echo "Usage:\n";
-    echo " php bin/rcs checkIn <filename> [<comment>]\n";
-    echo " php bin/rcs checkout <filename> <version>\n";
-    echo " php bin/rcs log <filename>\n";
+    $help = "Usage:\n"
+        ." php bin/rcs checkin <filename> [<comment>]\n"
+        ." php bin/rcs checkout <filename> <version>\n"
+        ." php bin/rcs log <filename> [<version>]\n";
+
+    file_put_contents('php://stderr', $help);
 }
