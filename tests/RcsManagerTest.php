@@ -79,38 +79,4 @@ class RcsManagerTest extends TestCase
 
     }
 
-    // public function test_can_instantiate_rcs_manager(): void
-    // {
-    //     $rcs = new RcsManager();
-    //     $this->assertInstanceOf(RcsManager::class, $rcs);
-
-    //     $testFile = __DIR__ . '/sandbox.txt';
-    //     if (file_exists($testFile)) {
-    //         unlink($testFile);
-    //     }
-
-    //     $rcsJson = __DIR__ . '/.rcs/sandbox.txt.json';
-    //     if (file_exists($rcsJson)) {
-    //         unlink($rcsJson);
-    //     }
-
-    //     file_put_contents($testFile, "Hello, World! - Version 1");
-    //     $rcs->checkIn($testFile, "First commit! Initialized sandbox.");
-    //     $this->assertFileExists($rcsJson);
-    //     $history = $rcs->log($testFile);
-    //     $this->assertSame(1, $history[0]["version"]);
-    //     $this->assertSame("First commit! Initialized sandbox.", $history[0]["comment"]); 
-    //     $this->assertSame("Hello, World! - Version 1", $history[0]["content"]); 
-
-    //     file_put_contents($testFile, "Hello, World! - Version 2");
-    //     $rcs->checkIn($testFile, "2nd commit! Initialized sandbox.");
-    //     $history = $rcs->log($testFile, 2);
-    //     $this->assertSame(2, $history[0]["version"]);
-    //     $this->assertSame("2nd commit! Initialized sandbox.", $history[0]["comment"]); 
-    //     $this->assertSame("Hello, World! - Version 2", $history[0]["content"]);
-
-    //     $rcs->checkOut($testFile, 1);
-    //     $file_content = file_get_contents($testFile);
-    //     $this->assertSame("Hello, World! - Version 1", $file_content);
-    // }
 }
