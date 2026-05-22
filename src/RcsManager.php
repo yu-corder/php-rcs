@@ -105,7 +105,7 @@ class RcsManager
             if (!isset($rcsData["history"][$index])) {
                 throw new \InvalidArgumentException("Version {$version} not found in history.");
             }
-            $log = $rcsData["history"][$index];
+            $log[] = $rcsData["history"][$index];
         } else {
             $log = $rcsData["history"];
         }
