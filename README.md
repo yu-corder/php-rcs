@@ -1,5 +1,8 @@
 # php-rcs
 
+![PHP](https://img.shields.io/badge/PHP-8.2%20--%208.5-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+
 A pure PHP implementation of a Revision Control System (RCS) for file versioning.
 
 `php-rcs` is a lightweight revision control library inspired by traditional RCS tools and modern version control concepts.
