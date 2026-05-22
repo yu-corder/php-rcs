@@ -1,5 +1,5 @@
 {
-    "name": "todayuuya/php-rcs",
+    "name": "yu-corder/php-rcs",
     "description": "A pure PHP implementation of a Revision Control System (RCS) for file versioning.",
     "license": "MIT",
     "type": "library",
@@ -8,6 +8,9 @@
         "version-control",
         "revision",
         "diff"
+    ],
+    "bin": [
+        "bin/rcs"
     ],
     "authors": [
         {
